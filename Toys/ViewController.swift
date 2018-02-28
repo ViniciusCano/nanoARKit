@@ -18,6 +18,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     //Instancia uma esfera
     var sphere = SCNNode(geometry: SCNSphere(radius: 0.01))
     
+    // Flags
     var ballSelected = false
     var ctSelected = false
     var boxSelected = false
@@ -104,34 +105,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let cameraPosition = SCNVector3Make(cameraLocation.x + cameraOrientation.x, cameraLocation.y + cameraOrientation.y, cameraLocation.z + cameraOrientation.z)
         
         sphere.position = cameraPosition
-        
-//        // Propriedas de luz
-//        guard let currentFrame = sceneView.session.currentFrame,
-//            let lightEstimate = currentFrame.lightEstimate else {
-//                return
-//        }
-//
-//        let neutralIntensity: CGFloat = 1000
-//        let ambientIntensity = min(lightEstimate.ambientIntensity,
-//                                   neutralIntensity)
-//        let blendFactor = 1 - ambientIntensity / neutralIntensity
-//
-//        for node in sceneView.scene.rootNode.childNodes {
-////            if let ball = node as? SKSpriteNode {
-////                ball.color = .black
-////                ball.colorBlendFactor = blendFactor
-////
-////            }
-//            if node.name == "ball"{
-//
-//                let miraMaterial = SCNMaterial()
-//                miraMaterial.diffuse.contents = UIColor.white
-//                sphere.geometry?.firstMaterial = miraMateria
-//            }
-//        }
-    
-        
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
