@@ -113,28 +113,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let hitResults = sceneView.hitTest(location, options: nil)
         print("hitResults = ", hitResults)
         if let result = hitResults.first {
-            handleTouchFor(node: result.node)
+            detectNode(node: result.node)
         }
     }
     
-    func handleTouchFor(node: SCNNode) {
-        let nodeMaterial = SCNMaterial()
+    func detectNode(node: SCNNode) {
         if node.name == "ball" {
-            print("Ball Touched")
-            ballSelected = true
-            ctSelected = false
-            //Faz o node emitir "luz"
-            nodeMaterial.emission.contents = UIColor.yellow
-            //Aplica material ao node
-            node.geometry?.firstMaterial = nodeMaterial
+            ballSelected(node: node)
+            ctNotSelected()
         }else if node.name == "ct"{
-            print("CT Touched")
-            ballSelected = false
-            ctSelected = true
-            //Faz o node emitir "luz"
-            nodeMaterial.emission.contents = UIColor.yellow
-            //Aplica material ao node
-            node.geometry?.firstMaterial = nodeMaterial
+            ctSelected(node: node)
+            ballNotSelected()
         }else if node.name == "box"{
             print("Box Touched")
             if(ballSelected){
@@ -145,12 +134,54 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
+    func ballSelected(node: SCNNode){
+        let nodeMaterial = SCNMaterial()
+        ballSelected = true
+        ctSelected = false
+        //Faz o node emitir "luz"
+        nodeMaterial.emission.contents = UIColor.yellow
+        //Aplica material ao node
+        node.geometry?.firstMaterial = nodeMaterial
+    }
+    
+    func ballNotSelected(){
+        let nodeMaterial = SCNMaterial()
+        ballSelected = false
+        //Faz o node emitir "luz"
+        nodeMaterial.emission.intensity = 0.0
+        //Aplica material ao node
+        let node = sceneView.scene.rootNode.childNode(withName: "ball", recursively: false)
+        node?.geometry?.firstMaterial = nodeMaterial
+    }
+    
+    func ctSelected(node: SCNNode){
+        let nodeMaterial = SCNMaterial()
+        ballSelected = false
+        ctSelected = true
+        //Faz o node emitir "luz"
+        nodeMaterial.emission.contents = UIColor.yellow
+        //Aplica material ao node
+        node.geometry?.firstMaterial = nodeMaterial
+    }
+    
+    func ctNotSelected(){
+        let nodeMaterial = SCNMaterial()
+        ctSelected = false
+        //Faz o node emitir "luz"
+        nodeMaterial.emission.intensity = 0.0
+        //Aplica material ao node
+        let node = sceneView.scene.rootNode.childNode(withName: "ct", recursively: false)
+        node?.geometry?.firstMaterial = nodeMaterial
+    }
+    
     func changeBallPhysicsBody(){
-        sceneView.scene.rootNode.childNode(withName: "ball", recursively: false)?.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNSphere(radius: 5.0), options: nil)
+        sceneView.scene.rootNode.childNode(withName: "ball", recursively: false)?.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNSphere(radius: 0.5), options: nil)
+        sceneView.scene.rootNode.childNode(withName: "ball", recursively: false)?.position = SCNVector3(-20.0, -20.0, -20.0)
     }
     
     func changeCTPhysicsBody(){
-        sceneView.scene.rootNode.childNode(withName: "ct", recursively: false)?.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNBox(width: 5.0, height: 20.0, length: 0.1, chamferRadius: 0.0), options: nil)
+        sceneView.scene.rootNode.childNode(withName: "ct", recursively: false)?.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNBox(width: 0.010, height: 0.04, length: 0.1, chamferRadius: 0.0), options: nil)
+        sceneView.scene.rootNode.childNode(withName: "ct", recursively: false)?.position = SCNVector3(0.0, -30.0, -30.0)
     }
     
 }
