@@ -21,7 +21,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // Flags
     var ballSelected = false
     var ctSelected = false
-    var boxSelected = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +49,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         //Adiciona esfera na scene
         scene.rootNode.addChildNode(sphere)
         
-        
+        changeBallPhysicsBody()
+        changeCTPhysicsBody()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -112,21 +112,29 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let location = touch.location(in: sceneView)
         let hitResults = sceneView.hitTest(location, options: nil)
         print("hitResults = ", hitResults)
-        print("")
         if let result = hitResults.first {
             handleTouchFor(node: result.node)
         }
     }
     
     func handleTouchFor(node: SCNNode) {
+        let nodeMaterial = SCNMaterial()
         if node.name == "ball" {
             print("Ball Touched")
             ballSelected = true
             ctSelected = false
+            //Faz o node emitir "luz"
+            nodeMaterial.emission.contents = UIColor.yellow
+            //Aplica material ao node
+            node.geometry?.firstMaterial = nodeMaterial
         }else if node.name == "ct"{
             print("CT Touched")
             ballSelected = false
             ctSelected = true
+            //Faz o node emitir "luz"
+            nodeMaterial.emission.contents = UIColor.yellow
+            //Aplica material ao node
+            node.geometry?.firstMaterial = nodeMaterial
         }else if node.name == "box"{
             print("Box Touched")
             if(ballSelected){
@@ -135,6 +143,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 sceneView.scene.rootNode.childNode(withName: "ct", recursively: true)?.removeFromParentNode()
             }
         }
+    }
+    
+    func changeBallPhysicsBody(){
+        sceneView.scene.rootNode.childNode(withName: "ball", recursively: false)?.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNSphere(radius: 5.0), options: nil)
+    }
+    
+    func changeCTPhysicsBody(){
+        sceneView.scene.rootNode.childNode(withName: "ct", recursively: false)?.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNBox(width: 5.0, height: 20.0, length: 0.1, chamferRadius: 0.0), options: nil)
     }
     
 }
